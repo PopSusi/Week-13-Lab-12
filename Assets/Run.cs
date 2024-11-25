@@ -80,7 +80,7 @@ public class Run : MonoBehaviour
 
     public void BillboardButton()
     {
-        DownloadImage(SetImage, "https://upload.wikimedia.org/wikipedia/commons/thumb/1/15/Cat_August_2010-4.jpg/2560px-Cat_August_2010-4.jpg");
+        GetWebImage(SetImage);
         Debug.Log("Calling");
     }
 
@@ -93,14 +93,14 @@ public class Run : MonoBehaviour
     {
         index++;
         index %= texWWW.Length;
-        if (tex2D[index] == null)
-        {
-            Debug.Log(texWWW[index]);
-            StartCoroutine(DownloadImage(SetImage, texWWW[index]));
-        } else
+        if (tex2D[index] != null)
         {
             Debug.Log(tex2D[index].name);
             callback(tex2D[index]);
+        } else
+        {
+            Debug.Log(texWWW[index]);
+            DownloadImage(SetImage, texWWW[index]);
         }
     }
     public IEnumerator DownloadImage(Action<Texture2D> callback, string www)
@@ -109,7 +109,7 @@ public class Run : MonoBehaviour
         Debug.Log("Request object made");
         yield return request.SendWebRequest();
         Debug.Log("Request returned");
-        //tex2D[index] = DownloadHandlerTexture.GetContent(request);
-        callback(DownloadHandlerTexture.GetContent(request));
+        tex2D[index] = DownloadHandlerTexture.GetContent(request);
+        callback(tex2D[index]);
     }
 }
